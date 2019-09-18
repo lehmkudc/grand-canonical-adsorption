@@ -1,4 +1,4 @@
-from random import random, seed
+from random import random, seed, randrange
 from math import floor, pi
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -395,6 +395,8 @@ def adjust():
             delta = dro*0.5
         if (delta > s_box*0.25):
             delta = s_box*0.25
+        if (delta < s_box*0.01):
+            delta = s_box*0.01
     return
 
 def Ucor(r, rho):
@@ -523,14 +525,20 @@ def mc_grand( Pid_red, T_red ):
 Nh_max = 1000
 pi_move = 0.5
 
-input_data = pd.read_csv("s_box_test.csv")
+ab = seed()
+
+filename = "sbox_updated2.csv"
+input_data = pd.read_csv(filename)
 N_exp = input_data.shape[0]
 
 rho_red_result = [0]*N_exp
 P_red_result = [0]*N_exp
+P_var_red_result = [0]*N_exp
 rho_result = [0]*N_exp
 P_result = [0]*N_exp
+P_var_result = [0]*N_exp
 time_result = [0]*N_exp
+random_seed = [0]*N_exp
 print( N_exp, "Runs")
 
 for i in range(N_exp):
@@ -538,7 +546,6 @@ for i in range(N_exp):
     
     Pid_red = input_data.Pid_red[i]
     T_red = input_data.T_red[i]
-    random_seed = input_data.seed[i]
     tailcor = input_data.tailcor[i]
     N_moves = input_data.nmoves[i]
     N_equil = input_data.nequil[i]
@@ -570,23 +577,29 @@ for i in range(N_exp):
         rc = min([2.5*s_hh,0.5*s_box]) #[A]
         
     # Run Simulation
-    seed(random_seed)
+    random_seed[i] = randrange(10000,99999)
+    seed( random_seed[i] )
     rhov, Env, Pv, Nv = mc_run() #[A-3, , MPa, ]
     rho_result[i] = rhov.mean() #[A-3]
     P_result[i] = Pv.mean() #[MPa]
+    P_var_result[i] = Pv.std()
     rho_red_result[i] = s_hh**3*rhov.mean()
     P_red_result[i] = s_hh**3/e_hh/kb*Pv.mean()*10**(6)
+    P_var_red_result[i] = s_hh**3/e_hh/kb*Pv.std()*10**(6)
     time_result[i] = time() - t0
     print("i =", i,
-          "rho =", round( rho_red_result[i], 5), 
+          "\trho =", round( rho_red_result[i], 5), 
           "\tP =", round(P_red_result[i],5), 
           "\tTime =", round(time_result[i], 5) )
     
     output_data = input_data    
     output_data['rho'] = rho_result
     output_data['P'] = P_result
+    output_data['P_var'] = P_var_result
     output_data['rho_red'] = rho_red_result
     output_data['P_red'] = P_red_result
+    output_data['P_var_red'] = P_var_red_result
     output_data['time'] = time_result
-    output_data.to_csv("s_box_test.csv", index = False)
+    output_data['seed'] = random_seed
+    output_data.to_csv(filename, index = False)
 

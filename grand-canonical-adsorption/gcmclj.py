@@ -537,8 +537,8 @@ Nh_max = 1000
 random_seed = 7
 tailcor = False
 N_moves = 100
-N_equil = 500
-N_prod = 1000
+N_equil = 1000
+N_prod = 2000
 pi_move = 0.5
 s_box = 5.64*3.73 #[A]
 delta = 1
@@ -574,38 +574,13 @@ P_red = s_hh**3/e_hh/kb*Pv.mean()*10**(6)
 print("rho*: ", rho_red, " P*: ", P_red)
 
 
-A_vdw = 6.832*(10**10)
-B_vdw = 43.206
-P_vdw = kb*T/(1/rhov.mean() - B_vdw) - A_vdw*rhov.mean()*rhov.mean()
-P_vdw_red = P_vdw*s_hh**3/e_hh/kb
+#plt.plot( range(0,N_prod),rhov )
+#plt.plot( range(0,N_prod), Pv)
 
+import seaborn as sns
+sns.distplot( rhov )
+sns.distplot( Pv )
 
-s_hh**3/e_hh/kb*6*10**6
-P_id = rhov.mean()*kb*T #Pa
-P_id_red = s_hh**3/e_hh/kb*P_id
-
-Nv.mean()/Vol*s_hh**3
-
-
-def VDW( rho_red, T_red ):
-    rho = (rho_red/s_hh**3)*10**30 #[Part/m3]
-    R = 8.3144598 # [m3 Pa/K mol]
-    T = T_red*e_hh #[K]
-    a = 0.2283 #[Pa m6/mol2]
-    b = 4.278*10**(-5) #[m3/mol]
-    Vm = s_hh**3/rho_red*6.02*10**(-7)
-    P =  R*T/( Vm - b  ) - a*(Vm)**(-2) #[Pa]
-    P_red = s_hh**3/e_hh/kb*P
-    return( P_red )
-    
-VDW(0.5311, 2)
-
-P = Pv.mean()*10**6 #[Pa]
-rho = rhov.mean()
-Z = P/rho/kb/T
-
-P_id
-Pid
-Pv.mean()/rhov.mean()/kb/T
-
-8.314*T/P_id
+from statsmodels.graphics.gofplots import qqplot
+qqplot( rhov )
+qqplot( Pv )
