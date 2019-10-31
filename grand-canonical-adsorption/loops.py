@@ -1,9 +1,9 @@
 from random import random, seed, randrange
 from math import floor, pi
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-import os
+#import os
 from time import time
 import pandas as pd
 
@@ -60,8 +60,8 @@ def remove(o):
     Y[o] = Y[Nh]
     Z[o] = Z[Nh]
     
-def get_h():
-    return X[:Nh], Y[:Nh], Z[:Nh]
+#def get_h():
+#    return X[:Nh], Y[:Nh], Z[:Nh]
 
 def dist_hi(x,y,z,j):
     # Distance btw a proposed particle and the ith H2 particle
@@ -101,21 +101,21 @@ def dist_ci(x,y,z,j):
         dz = dz + s_box
     return dx*dx + dy*dy + dz*dz
 
-def dist_h(x,y,z):
-    # Distance btw proposed particle and all H2 particles
-    # Currently not used
-    r2h = [0]*Nh 
-    for i in range(Nh):
-        r2h[i] = dist_hi( x,y,z,i ) #[A^2]
-    return r2h
-
-def dist_c(x,y,z):
-    # Distance btw proposed particle and all C particles
-    # Currently not used
-    r2c = [0]*Nc
-    for i in range(Nc):
-        r2c[i] = dist_ci(x,y,z,i) #[A^2]
-    return r2c
+#def dist_h(x,y,z):
+#    # Distance btw proposed particle and all H2 particles
+#    # Currently not used
+#    r2h = [0]*Nh 
+#    for i in range(Nh):
+#        r2h[i] = dist_hi( x,y,z,i ) #[A^2]
+#    return r2h
+#
+#def dist_c(x,y,z):
+#    # Distance btw proposed particle and all C particles
+#    # Currently not used
+#    r2c = [0]*Nc
+#    for i in range(Nc):
+#        r2c[i] = dist_ci(x,y,z,i) #[A^2]
+#    return r2c
 
 
 def Ui(r2, eps, sig):
@@ -191,9 +191,9 @@ def mc_add():
     
     #Calculate Energy of Trial Move
     U_move, Vir_move = Up(x,y,z,Nh+1)
-    if tailcor:
-        U_move = U_move + (Nh+1)*Ucor(rc,(Nh+1)/Vol) - Nh*Ucor(rc, Nh/Vol)
-        
+#    if tailcor:
+#        U_move = U_move + (Nh+1)*Ucor(rc,(Nh+1)/Vol) - Nh*Ucor(rc, Nh/Vol)
+#        
     # Probability of accepting trial move
     pa_add = p_add( U_move )
     
@@ -223,9 +223,9 @@ def mc_remove():
     U_move, Vir_move = Up( x,y,z, o)
     U_move = -U_move
     Vir_move = -Vir_move
-    if tailcor:
-        U_move = U_move + ((Nh-1)*Ucor(rc,(Nh-1)/Vol)-Nh*Ucor(rc,Nh/Vol))
-    
+#    if tailcor:
+#        U_move = U_move + ((Nh-1)*Ucor(rc,(Nh-1)/Vol)-Nh*Ucor(rc,Nh/Vol))
+#    
     # Probability of Accepting Trial Move
     pa_remove = p_rem( U_move )
     
@@ -309,8 +309,8 @@ def sample():
         rho = Nh/Vol #[A^-3]
         Enp = UT/Nh #[K]
         Pressure = ( Nh/Vol/beta + VirT/(3*Vol) )*kb*10**(-6) #[MPa] 
-        if tailcor:
-            Pressure = Pressure + Pcor(rc, Nh/Vol)
+#        if tailcor:
+#            Pressure = Pressure + Pcor(rc, Nh/Vol)
     return rho, Enp, Pressure, Nh
 
 def UTo():
@@ -326,9 +326,9 @@ def UTo():
         Ut = Ut + U_p
         Virt = Virt + Vir_p
     
-    if tailcor:
-        Ut = Ut + Nh*Ucor( rc, Nh/Vol)
-        
+#    if tailcor:
+#        Ut = Ut + Nh*Ucor( rc, Nh/Vol)
+#        
     return Ut, Virt
 
 def mc_step():
@@ -363,7 +363,7 @@ def mc_run():
     
     
     # Equilibration Step
-    Natt = 0; Nacc=0; Aatt=0; Aacc=0; Ratt=0;Racc=0;Pacc = 0; Patt = 0
+    Natt = 0; Nacc=0; Aatt=0; Aacc=0; Ratt=0;Racc=0;
     for j in range(N_equil):
         mc_cycle()
         if( (j)%floor(N_equil/10) == 0 ):
@@ -399,125 +399,125 @@ def adjust():
             delta = s_box*0.01
     return
 
-def Ucor(r, rho):
-    # Tail correction for LJ Potential
-    sr = s_hh/r
-    return (8/3)*pi*e_hh*rho*s_hh**3*(1/3*sr**9 - sr**3)
+#def Ucor(r, rho):
+#    # Tail correction for LJ Potential
+#    sr = s_hh/r
+#    return (8/3)*pi*e_hh*rho*s_hh**3*(1/3*sr**9 - sr**3)
+#
+#def Pcor(r, rho):
+#    # Tail correction for Pressure
+#    sr = s_hh/r
+#    return (16/3)*pi*e_hh*rho**2*s_hh**3*( 2/3*sr**9 - sr**3)*kb*10**(-6) #[MPa] 
 
-def Pcor(r, rho):
-    # Tail correction for Pressure
-    sr = s_hh/r
-    return (16/3)*pi*e_hh*rho**2*s_hh**3*( 2/3*sr**9 - sr**3)*kb*10**(-6) #[MPa] 
-
-def move_test():
-    o = floor( random()*Nh )
-    x = X[o]
-    y = Y[o]
-    z = Z[o]
-    print("x: ", x, " y: ", y," z: ", z," o: ", o )
-
-    # Calculate Energy of current configuration
-    U1, V1 = Up( x,y,z, o)
-    print("U1: ", U1, "V1: ", V1 )
-
-    # Calculate new Location
-    xn = x + delta*(random()-0.5)
-    yn = y + delta*(random()-0.5)
-    zn = z + delta*(random()-0.5)
-    print("xn: ", xn," yn: ", yn,"zn: ", zn)
-    xn, yn, zn = box_fix( xn, yn, zn )
-    print("xn: ", xn," yn: ", yn,"zn: ", zn)
-
-    # Calculate Energy of New Configuration
-    U2, V2 = Up( xn,yn,zn, o)
-    print("U2: ", U2, " V2: ", V2 )
-    U_move = U2 - U1
-    V_move = V2 - V1
-    print("Umove: ", U_move, " Vmove: ", V_move )
-
-    if (U_move*beta > 100):
-        pa_move = 0
-    elif (U_move*beta < -100):
-        pa_move = 1
-    else:
-        pa_move = p_move( U_move )
-    print("pa_move: ", pa_move )
-    
-def add_test(Pid_red, T_red, Nh,x=-1.0, y=-1.0, z=-1.0):
-    if ( x<0.0 and y<0.0 and z<0.0):
-        x = random()*s_box
-        y = random()*s_box
-        z = random()*s_box
-
-    print( "x: ", x, " y: ", y, " z: ", z)
-    #Calculate Energy of Trial Move
-    U_move, Vir_move = Up(x,y,z,Nh+1)
-    print("Umove: ", U_move, " Vmove: ", Vir_move )
-    print("Pcorr: ", ZZ*Vol/(Nh + 1)/kb )
-
-    # Probability of accepting trial move
-    if (U_move*beta > 100):
-        pa_add = 0
-    elif (U_move*beta < -100):
-        pa_add = 1
-    else:
-        pa_add = p_add( U_move )
-    print("pa_add: ", pa_add )
-    return( pa_add, U_move )
-    
-def remove_test(Pid_red, T_red, Nh, o=-1):
-    if (o==-1):
-        o = floor( random()*Nh )
-        
-    x = X[o]
-    y = Y[o]
-    z = Z[o]
-    print("x: ", x, " y: ", y," z: ", z," o: ", o )
-
-    # Calculate Energy of Trial Move
-    U_move, Vir_move = Up( x,y,z, o)
-    U_move = -U_move
-    Vir_move = -Vir_move
-    
-    Pid = e_hh*kb*Pid_red/s_hh**3 # [Pa]
-    T = e_hh*T_red # [K]
-    Vol = s_box**3 #[A^3]
-    beta = 1/T #[K^-1]
-    ZZ = beta*Pid
-
-    print("Umove: ", U_move, " Vmove: ", Vir_move )
-    print("Pcorr: ", Nh*kb/(ZZ*Vol))
-
-    # Probability of Accepting Trial Move
-    if (U_move*beta > 100):
-        pa_remove = 0
-    elif (U_move*beta < -100):
-        pa_remove = 1
-    else:
-        pa_remove = p_rem(U_move)
-
-    print("pa_remove: ", pa_remove)
-    return( pa_remove, U_move )
-    
-    
-def mc_grand( Pid_red, T_red ):
-    
-    # Computed Properties
-    Pid = e_hh*kb*Pid_red/s_hh**3 # [Pa]
-    T = e_hh*T_red # [K]
-    Vol = s_box**3 #[A^3]
-    beta = 1/T #[K^-1]
-    ZZ = beta*Pid
-    Nh = floor( ZZ*Vol/kb )
-    rc = s_box
-    if ( tailcor):
-        rc = min([2.5*s_hh,0.5*s_box]) #[A]
-    rhov, Env, Pv, Nv = mc_run(Vol, beta, ZZ, Nh, rc)
-    
-    rho_red = s_hh**3*rhov.mean()
-    P_red = s_hh**3/e_hh/kb*Pv.mean()*10**(6)
-    print("rho*: ", rho_red, " P*: ", P_red)
-    return rho_red, P_red
+#def move_test():
+#    o = floor( random()*Nh )
+#    x = X[o]
+#    y = Y[o]
+#    z = Z[o]
+#    print("x: ", x, " y: ", y," z: ", z," o: ", o )
+#
+#    # Calculate Energy of current configuration
+#    U1, V1 = Up( x,y,z, o)
+#    print("U1: ", U1, "V1: ", V1 )
+#
+#    # Calculate new Location
+#    xn = x + delta*(random()-0.5)
+#    yn = y + delta*(random()-0.5)
+#    zn = z + delta*(random()-0.5)
+#    print("xn: ", xn," yn: ", yn,"zn: ", zn)
+#    xn, yn, zn = box_fix( xn, yn, zn )
+#    print("xn: ", xn," yn: ", yn,"zn: ", zn)
+#
+#    # Calculate Energy of New Configuration
+#    U2, V2 = Up( xn,yn,zn, o)
+#    print("U2: ", U2, " V2: ", V2 )
+#    U_move = U2 - U1
+#    V_move = V2 - V1
+#    print("Umove: ", U_move, " Vmove: ", V_move )
+#
+#    if (U_move*beta > 100):
+#        pa_move = 0
+#    elif (U_move*beta < -100):
+#        pa_move = 1
+#    else:
+#        pa_move = p_move( U_move )
+#    print("pa_move: ", pa_move )
+#    
+#def add_test(Pid_red, T_red, Nh,x=-1.0, y=-1.0, z=-1.0):
+#    if ( x<0.0 and y<0.0 and z<0.0):
+#        x = random()*s_box
+#        y = random()*s_box
+#        z = random()*s_box
+#
+#    print( "x: ", x, " y: ", y, " z: ", z)
+#    #Calculate Energy of Trial Move
+#    U_move, Vir_move = Up(x,y,z,Nh+1)
+#    print("Umove: ", U_move, " Vmove: ", Vir_move )
+#    print("Pcorr: ", ZZ*Vol/(Nh + 1)/kb )
+#
+#    # Probability of accepting trial move
+#    if (U_move*beta > 100):
+#        pa_add = 0
+#    elif (U_move*beta < -100):
+#        pa_add = 1
+#    else:
+#        pa_add = p_add( U_move )
+#    print("pa_add: ", pa_add )
+#    return( pa_add, U_move )
+#    
+#def remove_test(Pid_red, T_red, Nh, o=-1):
+#    if (o==-1):
+#        o = floor( random()*Nh )
+#        
+#    x = X[o]
+#    y = Y[o]
+#    z = Z[o]
+#    print("x: ", x, " y: ", y," z: ", z," o: ", o )
+#
+#    # Calculate Energy of Trial Move
+#    U_move, Vir_move = Up( x,y,z, o)
+#    U_move = -U_move
+#    Vir_move = -Vir_move
+#    
+#    Pid = e_hh*kb*Pid_red/s_hh**3 # [Pa]
+#    T = e_hh*T_red # [K]
+#    Vol = s_box**3 #[A^3]
+#    beta = 1/T #[K^-1]
+#    ZZ = beta*Pid
+#
+#    print("Umove: ", U_move, " Vmove: ", Vir_move )
+#    print("Pcorr: ", Nh*kb/(ZZ*Vol))
+#
+#    # Probability of Accepting Trial Move
+#    if (U_move*beta > 100):
+#        pa_remove = 0
+#    elif (U_move*beta < -100):
+#        pa_remove = 1
+#    else:
+#        pa_remove = p_rem(U_move)
+#
+#    print("pa_remove: ", pa_remove)
+#    return( pa_remove, U_move )
+#    
+#    
+#def mc_grand( Pid_red, T_red ):
+#    
+#    # Computed Properties
+#    Pid = e_hh*kb*Pid_red/s_hh**3 # [Pa]
+#    T = e_hh*T_red # [K]
+#    Vol = s_box**3 #[A^3]
+#    beta = 1/T #[K^-1]
+#    ZZ = beta*Pid
+#    Nh = floor( ZZ*Vol/kb )
+#    rc = s_box
+#    if ( tailcor):
+#        rc = min([2.5*s_hh,0.5*s_box]) #[A]
+#    rhov, Env, Pv, Nv = mc_run(Vol, beta, ZZ, Nh, rc)
+#    
+#    rho_red = s_hh**3*rhov.mean()
+#    P_red = s_hh**3/e_hh/kb*Pv.mean()*10**(6)
+#    print("rho*: ", rho_red, " P*: ", P_red)
+#    return rho_red, P_red
 
 
 # User Defined Variables
@@ -527,7 +527,20 @@ pi_move = 0.5
 
 ab = seed()
 
-filename = "sbox_updated2.csv"
+# Define Simulation Properties
+delta = 1
+
+# Define Useful Constants
+s_hh = 3.73 # sigma [A]
+e_hh = 147.5 # eps over kb[K]
+#s_me = 3.73 # [A]
+#e_me = 147.5 #[K]
+s_hc = 2.74 # sigma [A]
+e_hc = 16.2463 # eps over kb[K]
+kb = 1.3806*10**(7) #[Pa*A^3/K]
+c_bond = 2.24 #[A]
+
+filename = "input_data.csv"
 input_data = pd.read_csv(filename)
 N_exp = input_data.shape[0]
 
@@ -546,25 +559,12 @@ for i in range(N_exp):
     
     Pid_red = input_data.Pid_red[i]
     T_red = input_data.T_red[i]
-    tailcor = input_data.tailcor[i]
+#    tailcor = input_data.tailcor[i]
     N_moves = input_data.nmoves[i]
     N_equil = input_data.nequil[i]
     N_prod = input_data.nprod[i]
     s_box = input_data.sbox[i]
 
-    # Define Simulation Properties
-    delta = 1
-    
-    # Define Useful Constants
-    s_hh = 3.73 # sigma [A]
-    e_hh = 147.5 # eps over kb[K]
-    s_me = 3.73 # [A]
-    e_me = 147.5 #[K]
-    s_hc = 2.74 # sigma [A]
-    e_hc = 16.2463 # eps over kb[K]
-    kb = 1.3806*10**(7) #[Pa*A^3/K]
-    c_bond = 2.24 #[A]
-        
     # Calculated Properties
     Pid = e_hh*kb*Pid_red/s_hh**3 # [Pa]
     T = e_hh*T_red # [K]
@@ -573,8 +573,8 @@ for i in range(N_exp):
     ZZ = beta*Pid
     Nh = floor( ZZ*Vol/kb )
     rc = s_box
-    if ( tailcor):
-        rc = min([2.5*s_hh,0.5*s_box]) #[A]
+#    if ( tailcor):
+#        rc = min([2.5*s_hh,0.5*s_box]) #[A]
         
     # Run Simulation
     random_seed[i] = randrange(10000,99999)
