@@ -529,7 +529,7 @@ def mc_grand( Pid_red, T_red ):
 
 
 # User Defined Variables
-Pid_red = 2
+Pid_red = 1
 T_red = 2
 
 # Define Simulation Properties
@@ -544,8 +544,8 @@ s_box = 5.64*3.73 #[A]
 delta = 1
 
 # Define Useful Constants
-s_hh = 3.73 # sigma [A]
-e_hh = 147.5 # eps over kb[K]
+s_hh = 3.71 # sigma [A]
+e_hh = 257.8 # eps over kb[K]
 s_me = 3.73 # [A]
 e_me = 147.5 #[K]
 s_hc = 2.74 # sigma [A]
